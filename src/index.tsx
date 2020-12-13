@@ -5,6 +5,8 @@ import { ApolloProvider } from "@apollo/react-hooks";
 
 import { Tickets } from "./sections";
 
+import "./styles/index.css";
+
 import reportWebVitals from "./reportWebVitals";
 
 const client = new ApolloClient({ uri: "/api" });

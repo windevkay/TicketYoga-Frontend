@@ -1,7 +1,11 @@
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
+import { List } from "antd";
+
 import { TICKETS as TicketsData } from "./__generated__/TICKETS";
+
+import "./styles/index.css";
 
 const TICKETS = gql`
   query TICKETS {
@@ -22,11 +26,18 @@ export const Tickets = ({ title }: Props) => {
   const { data, loading, error } = useQuery<TicketsData>(TICKETS);
   const tickets = data ? data.getTickets : null;
   const ticketList = tickets ? (
-    <ul>
-      {tickets.map((ticket) => {
-        return <li key={ticket.price}>{ticket.ticketCategory}</li>;
-      })}
-    </ul>
+    <List
+      itemLayout="horizontal"
+      dataSource={tickets}
+      renderItem={(ticket) => (
+        <List.Item>
+          <List.Item.Meta
+            title={ticket.ticketCategory}
+            description={ticket.price}
+          />
+        </List.Item>
+      )}
+    />
   ) : null;
 
   if (loading) {
@@ -38,7 +49,7 @@ export const Tickets = ({ title }: Props) => {
   }
 
   return (
-    <div>
+    <div className="tickets">
       <h2>{title}</h2>
       {ticketList}
     </div>
