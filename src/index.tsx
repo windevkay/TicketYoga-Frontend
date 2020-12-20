@@ -1,24 +1,35 @@
 import ReactDOM from "react-dom";
+import reportWebVitals from "./reportWebVitals";
 
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-import { Tickets } from "./sections";
-
+import { Home, CreateEvent, Event, Events, User, NotFound } from "./sections";
 import "./styles/index.css";
-
-import reportWebVitals from "./reportWebVitals";
 
 const client = new ApolloClient({ uri: "/api" });
 
+const App = () => {
+  return (
+    <Router>
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/createevent" component={CreateEvent} />
+        <Route exact path="/event/:id" component={Event} />
+        <Route exact path="/events/:location?" component={Events} />
+        <Route exact path="/user/:id" component={User} />
+        <Route component={NotFound} />
+      </Switch>
+    </Router>
+  );
+};
+
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <Tickets title={"TicketYoga"} />
+    <App />
   </ApolloProvider>,
   document.getElementById("root")
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
