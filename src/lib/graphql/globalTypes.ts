@@ -7,9 +7,8 @@
 // START Enums and Input Objects
 //==============================================================
 
-export enum TicketCategory {
-  REGULAR = "REGULAR",
-  VIP = "VIP",
+export interface LogInInput {
+  code: string;
 }
 
 //==============================================================
