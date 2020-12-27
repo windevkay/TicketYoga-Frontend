@@ -1,9 +1,15 @@
-import { useApolloClient } from "@apollo/react-hooks";
+import { useEffect, useRef } from "react";
+import { useApolloClient, useMutation } from "@apollo/react-hooks";
 
 import { AUTH_URL } from "../../lib/graphql/queries/AuthUrl";
+import { LOG_IN } from "../../lib/graphql/mutations/LogIn";
 import { AUTH_URL as AuthUrlData } from "../../lib/graphql/queries/AuthUrl/__generated__/AUTH_URL";
+import {
+  LOG_IN as LogInData,
+  LOG_INVariables,
+} from "../../lib/graphql/mutations/LogIn/__generated__/LOG_IN";
 
-import { Card, Layout, Typography } from "antd";
+import { Card, Layout, Typography, Spin } from "antd";
 
 import { Viewer } from "../../lib/types";
 import googleLogo from "./assets/google_logo.jpg";
@@ -17,6 +23,31 @@ const { Text, Title } = Typography;
 
 export const Login = ({ setViewer }: Props) => {
   const client = useApolloClient();
+  const [
+    logIn,
+    { data: logInData, loading: logInLoading, error: logInError },
+  ] = useMutation<LogInData, LOG_INVariables>(LOG_IN, {
+    onCompleted: (data) => {
+      if (data && data.logIn) {
+        setViewer(data.logIn);
+      }
+    },
+  });
+
+  const logInRef = useRef(logIn);
+
+  useEffect(() => {
+    // check for code param in URL
+    const code = new URL(window.location.href).searchParams.get("code");
+    if (code) {
+      logInRef.current({
+        variables: {
+          input: { code },
+        },
+      });
+    }
+  }, []);
+
   const handleAuthorize = async () => {
     try {
       const { data } = await client.query<AuthUrlData>({ query: AUTH_URL });
@@ -24,6 +55,14 @@ export const Login = ({ setViewer }: Props) => {
       window.location.href = data.authUrl;
     } catch (error) {}
   };
+
+  if (logInLoading) {
+    return (
+      <Content className="log-in">
+        <Spin size="large" tip="Sit tight while we log you in... ⚡" />
+      </Content>
+    );
+  }
 
   return (
     <Content className="log-in">
