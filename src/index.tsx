@@ -5,11 +5,12 @@ import reportWebVitals from "./reportWebVitals";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Layout } from "antd";
+import { Layout, Affix } from "antd";
 
 import { Viewer } from "./lib/types";
 
 import {
+  AppHeader,
   Home,
   CreateEvent,
   Event,
@@ -35,6 +36,9 @@ const App = () => {
   return (
     <Router>
       <Layout id="app">
+        <Affix offsetTop={0} className="app__affix-header">
+          <AppHeader viewer={viewer} setViewer={setViewer} />
+        </Affix>
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/createevent" component={CreateEvent} />

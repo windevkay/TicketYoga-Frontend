@@ -1,5 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useApolloClient, useMutation } from "@apollo/react-hooks";
+import { Redirect } from "react-router-dom";
+
+import { Card, Layout, Typography, Spin } from "antd";
 
 import { AUTH_URL } from "../../lib/graphql/queries/AuthUrl";
 import { LOG_IN } from "../../lib/graphql/mutations/LogIn";
@@ -9,10 +12,16 @@ import {
   LOG_INVariables,
 } from "../../lib/graphql/mutations/LogIn/__generated__/LOG_IN";
 
-import { Card, Layout, Typography, Spin } from "antd";
+import { ErrorBanner } from "../../lib/components";
+import {
+  displayErrorMessage,
+  displaySuccessNotification,
+} from "../../lib/utils";
 
 import { Viewer } from "../../lib/types";
 import googleLogo from "./assets/google_logo.jpg";
+
+import { LogInMessages } from "./messages";
 
 interface Props {
   setViewer: (viewer: Viewer) => void;
@@ -30,6 +39,7 @@ export const Login = ({ setViewer }: Props) => {
     onCompleted: (data) => {
       if (data && data.logIn) {
         setViewer(data.logIn);
+        displaySuccessNotification(LogInMessages.LOGIN_SUCCESS);
       }
     },
   });
@@ -53,19 +63,32 @@ export const Login = ({ setViewer }: Props) => {
       const { data } = await client.query<AuthUrlData>({ query: AUTH_URL });
       //redirect to google signin page
       window.location.href = data.authUrl;
-    } catch (error) {}
+    } catch (error) {
+      displayErrorMessage(LogInMessages.LOGIN_ERROR);
+    }
   };
 
   if (logInLoading) {
     return (
       <Content className="log-in">
-        <Spin size="large" tip="Sit tight while we log you in... ⚡" />
+        <Spin size="large" tip={LogInMessages.LOGIN_LOADING} />
       </Content>
     );
   }
 
+  const logInErrorBannerElement = logInError ? (
+    <ErrorBanner description={LogInMessages.LOGIN_ERROR} />
+  ) : null;
+
+  //if login was successful redirect to user component and pass viewer id
+  if (logInData && logInData.logIn) {
+    const { id: viewerId } = logInData.logIn;
+    return <Redirect to={`/user/${viewerId}`} />;
+  }
+
   return (
     <Content className="log-in">
+      {logInErrorBannerElement}
       <Card className="log-in-card">
         <div className="log-in-card__intro">
           <Title level={3} className="log-in-card__intro-title">
@@ -74,12 +97,9 @@ export const Login = ({ setViewer }: Props) => {
             </span>
           </Title>
           <Title level={3} className="log-in-card__intro-title">
-            Log in to TicketYoga
+            {LogInMessages.LOGIN_TITLE}
           </Title>
-          <Text>
-            Get started by signing in with Google to begin creating events or
-            buying tickets!
-          </Text>
+          <Text>{LogInMessages.LOGIN_TEXT}</Text>
         </div>
         <button
           className="log-in-card__google-button"
@@ -91,14 +111,10 @@ export const Login = ({ setViewer }: Props) => {
             className="log-in-card__google-button-logo"
           />
           <span className="log-in-card__google-button-text">
-            Sign in with Google
+            {LogInMessages.LOGIN_CTA}
           </span>
         </button>
-        <Text type="secondary">
-          Note: By signing in, you'll be redirected to the Google consent form
-          to sign in with your Google account. You will also need to grant
-          permission for TicketYoga to access your Calender.
-        </Text>
+        <Text type="secondary">{LogInMessages.LOGIN_NOTE}</Text>
       </Card>
     </Content>
   );
