@@ -46,23 +46,23 @@ export const Login = ({ setViewer }: Props) => {
 
   const logInRef = useRef(logIn);
 
-  useEffect(() => {
-    // check for code param in URL
-    const code = new URL(window.location.href).searchParams.get("code");
-    if (code) {
-      logInRef.current({
-        variables: {
-          input: { code },
-        },
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   // check for code param in URL
+  //   const code = new URL(window.location.href).searchParams.get("code");
+  //   if (code) {
+  //     logInRef.current({
+  //       variables: {
+  //         input: { code },
+  //       },
+  //     });
+  //   }
+  // }, []);
 
   const handleAuthorize = async () => {
     try {
       const { data } = await client.query<AuthUrlData>({ query: AUTH_URL });
       //redirect to google signin page
-      window.location.href = data.authUrl;
+      window.location.assign(data.authUrl);
     } catch (error) {
       displayErrorMessage(LogInMessages.LOGIN_ERROR);
     }

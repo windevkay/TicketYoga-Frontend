@@ -11,14 +11,17 @@
     padding: 0;
   }
 }
-.ant-btn-background-ghost.ant-btn-primary {
-  color: #343d52;
-  border-color: #343d52;
+.menu-cta-button {
+  /*color: #343d52;
+  border-color: #343d52;*/
+  background-color: limegreen;
+  border-color: limegreen;
 }
-.ant-btn-background-ghost.ant-btn-primary:hover,
-.ant-btn-background-ghost.ant-btn-primary:focus {
-  color: #343d52;
-  border-color: #343d52;
+.menu-cta-button:hover,
+.menu-cta-button:focus {
+  color: limegreen;
+  border-color: limegreen;
+  background: none;
 }
 .ant-menu-horizontal > .ant-menu-item a:hover {
   color: #343d52;
