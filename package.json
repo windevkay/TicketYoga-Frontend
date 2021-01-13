@@ -30,7 +30,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "codegen:schema": "npx apollo client:download-schema --endpoint=http://localhost:9000/api",
-    "codegen:generate": "npx apollo client:codegen --localSchemaFile='schema.json' --includes='src/**/*.ts' --globalTypesFile='./src/lib/graphql/globalTypes.ts' --target=typescript"
+    "codegen:generate": "npx apollo client:codegen --localSchemaFile='schema.json' --includes='src/**/*.ts' --globalTypesFile='./src/lib/graphql/globalTypes.ts' --target=typescript",
+    "storybook": "start-storybook -p 9001 -c .storybook"
   },
   "eslintConfig": {
     "extends": [
@@ -52,6 +53,13 @@
   },
   "proxy": "http://localhost:9000",
   "devDependencies": {
-    "@apollo/react-testing": "^4.0.0"
+    "@apollo/react-testing": "^4.0.0",
+    "@storybook/react": "^6.1.14",
+    "@types/storybook-readme": "^5.0.4",
+    "awesome-typescript-loader": "^5.2.1",
+    "markdown-loader": "^6.0.0",
+    "react-docgen-typescript-loader": "^3.7.2",
+    "react-docgen-typescript-webpack-plugin": "^1.1.0",
+    "storybook-readme": "^5.0.9"
   }
 }
