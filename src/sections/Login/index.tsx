@@ -43,20 +43,23 @@ export const Login = ({ setViewer }: Props) => {
       }
     },
   });
-
+  // ref and location for use in useEffect hook
   const logInRef = useRef(logIn);
 
-  // useEffect(() => {
-  //   // check for code param in URL
-  //   const code = new URL(window.location.href).searchParams.get("code");
-  //   if (code) {
-  //     logInRef.current({
-  //       variables: {
-  //         input: { code },
-  //       },
-  //     });
-  //   }
-  // }, []);
+  useEffect(() => {
+    //check for code param in URL
+    const location = new URL(window.location.href);
+    console.log("location", location);
+    const code = location.searchParams.get("code");
+
+    if (code) {
+      logInRef.current({
+        variables: {
+          input: { code },
+        },
+      });
+    }
+  }, []);
 
   const handleAuthorize = async () => {
     try {
