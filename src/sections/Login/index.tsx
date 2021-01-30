@@ -18,6 +18,8 @@ import {
   displaySuccessNotification,
 } from "../../lib/utils";
 
+import { LoadingIcon } from "../../lib/components";
+
 import { Viewer } from "../../lib/types";
 import googleLogo from "./assets/google_logo.jpg";
 
@@ -37,8 +39,9 @@ export const Login = ({ setViewer }: Props) => {
     { data: logInData, loading: logInLoading, error: logInError },
   ] = useMutation<LogInData, LOG_INVariables>(LOG_IN, {
     onCompleted: (data) => {
-      if (data && data.logIn) {
+      if (data && data.logIn && data.logIn.token) {
         setViewer(data.logIn);
+        sessionStorage.setItem("token", data.logIn.token);
         displaySuccessNotification(LogInMessages.LOGIN_SUCCESS);
       }
     },
@@ -49,7 +52,6 @@ export const Login = ({ setViewer }: Props) => {
   useEffect(() => {
     //check for code param in URL
     const location = new URL(window.location.href);
-    console.log("location", location);
     const code = location.searchParams.get("code");
 
     if (code) {
@@ -74,7 +76,11 @@ export const Login = ({ setViewer }: Props) => {
   if (logInLoading) {
     return (
       <Content className="log-in">
-        <Spin size="large" tip={LogInMessages.LOGIN_LOADING} />
+        <Spin
+          indicator={LoadingIcon}
+          size="large"
+          tip={LogInMessages.LOGIN_LOADING}
+        />
       </Content>
     );
   }
